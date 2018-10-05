@@ -4,7 +4,7 @@ from functools import wraps
 
 import jwt
 import requests
-from flask import current_app, request, g, json, Response
+from flask import current_app, request, g, json
 
 from fabric8a_auth.errors import AuthError
 
@@ -106,7 +106,7 @@ def login_required(view):
                 decoded = decode_user_token(current_app, get_token_from_auth_header())
                 if not decoded:
                     lgr.exception('Provide an Authorization token with the API request')
-                    return Response('Login!', 401, {'WWW-Authenticate': 'Basic realm="Login!"'})
+                    return 'Authentication failed - token missing', 401
 
                 lgr.info('Successfully authenticated user {e} using JWT'.
                          format(e=decoded.get('email')))
