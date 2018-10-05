@@ -106,16 +106,16 @@ def login_required(view):
                 decoded = decode_user_token(current_app, get_token_from_auth_header())
                 if not decoded:
                     lgr.exception('Provide an Authorization token with the API request')
-                    raise AuthError(401, 'Authentication failed - token missing')
+                    return AuthError(401, 'Authentication failed - token missing')
 
                 lgr.info('Successfully authenticated user {e} using JWT'.
                          format(e=decoded.get('email')))
             except jwt.ExpiredSignatureError as exc:
                 lgr.exception('Expired JWT token')
-                raise AuthError(401, 'Authentication failed - token has expired')
+                return AuthError(401, 'Authentication failed - token has expired')
             except AuthError as exc:
                 lgr.exception('Failed decoding JWT token')
-                raise AuthError(401, 'Authentication failed - could not decode JWT token')
+                return AuthError(401, 'Authentication failed - could not decode JWT token')
 
         return view(*args, **kwargs)
 
