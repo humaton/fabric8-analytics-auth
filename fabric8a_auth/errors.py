@@ -1,4 +1,5 @@
 """Errors."""
+import json
 
 
 class AuthError(Exception):
@@ -27,3 +28,7 @@ class AuthError(Exception):
 
     def __str__(self):
         return 'AuthError({s}): {e}'.format(s=self.status_code, e=self.error)
+
+    def toJSON(self):
+        return json.dumps(self, default=lambda o: o.__dict__,
+                          sort_keys=True, indent=4)
