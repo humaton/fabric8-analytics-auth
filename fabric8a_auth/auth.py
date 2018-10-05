@@ -4,7 +4,7 @@ from functools import wraps
 
 import jwt
 import requests
-from flask import current_app, request, g
+from flask import current_app, request, g, json
 
 from fabric8a_auth.errors import AuthError
 
@@ -100,22 +100,22 @@ def login_required(view):
             if os.getenv('THREESCALE_ACCOUNT_SECRET') == threescale_account_secret:
                 lgr.info('Request has been successfully authenticated')
             else:
-                raise AuthError(401, 'Authentication failed - invalid token received')
+                return AuthError(401, 'Authentication failed - invalid token received')
         else:
             try:
                 decoded = decode_user_token(current_app, get_token_from_auth_header())
                 if not decoded:
                     lgr.exception('Provide an Authorization token with the API request')
-                    return AuthError(401, 'Authentication failed - token missing')
+                    return json.dumps(AuthError(401, 'Authentication failed - token missing'))
 
                 lgr.info('Successfully authenticated user {e} using JWT'.
                          format(e=decoded.get('email')))
             except jwt.ExpiredSignatureError as exc:
                 lgr.exception('Expired JWT token')
-                return AuthError(401, 'Authentication failed - token has expired')
+                return json.dumps(AuthError(401, 'Authentication failed - token has expired'))
             except AuthError as exc:
                 lgr.exception('Failed decoding JWT token')
-                return AuthError(401, 'Authentication failed - could not decode JWT token')
+                return json.dumps(AuthError(401, 'Authentication failed - could not decode JWT token'))
 
         return view(*args, **kwargs)
 
