@@ -120,7 +120,7 @@ def login_required(view):
             except jwt.ExpiredSignatureError as exc:
                 lgr.exception('Expired JWT token')
                 abort(AuthError(401, 'Authentication failed - token has expired'))
-            except Exception as exc:
+            except AuthError as exc:
                 lgr.exception('Failed decoding JWT token')
                 abort(AuthError(401, 'Authentication failed - could not decode JWT token'))
 
