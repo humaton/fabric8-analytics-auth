@@ -106,7 +106,7 @@ def login_required(view):
                 decoded = decode_user_token(current_app, get_token_from_auth_header())
                 if not decoded:
                     lgr.exception('Provide an Authorization token with the API request')
-                    return abort, 401
+                    return 401
 
                 lgr.info('Successfully authenticated user {e} using JWT'.
                          format(e=decoded.get('email')))
