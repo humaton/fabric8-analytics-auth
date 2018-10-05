@@ -112,16 +112,16 @@ def login_required(view):
             try:
                 decoded = decode_user_token(current_app, get_token_from_auth_header())
                 if not decoded:
-                    lgr.exception('Provide an Authorization token with the API request')
+                    lgr.error('Provide an Authorization token with the API request')
                     raise AuthError(401, 'Authentication failed - token missing')
 
                 lgr.info('Successfully authenticated user {e} using JWT'.
                          format(e=decoded.get('email')))
             except jwt.ExpiredSignatureError as exc:
-                lgr.exception('Expired JWT token')
+                lgr.error('Expired JWT token')
                 raise AuthError(401, 'Authentication failed - token has expired') from exc
             except Exception as exc:
-                lgr.exception('Failed decoding JWT token')
+                lgr.error('Failed decoding JWT token')
                 raise AuthError(401, 'Authentication failed - could not decode JWT token') from exc
 
         return view(*args, **kwargs)
@@ -141,16 +141,16 @@ def service_token_required(view):
         try:
             decoded = decode_service_token(current_app, get_token_from_auth_header())
             if not decoded:
-                lgr.exception('Provide an Authorization token with the API request')
+                lgr.error('Provide an Authorization token with the API request')
                 raise AuthError(401, 'Authentication failed - token missing')
 
             lgr.info('Successfully authenticated user {e} using JWT'.
                      format(e=decoded.get('email')))
         except jwt.ExpiredSignatureError as exc:
-            lgr.exception('Expired JWT token')
+            lgr.error('Expired JWT token')
             raise AuthError(401, 'Authentication failed - token has expired') from exc
         except Exception as exc:
-            lgr.exception('Failed decoding JWT token')
+            lgr.error('Failed decoding JWT token')
             raise AuthError(401, 'Authentication failed - could not decode JWT token') from exc
 
         return view(*args, **kwargs)
