@@ -1,7 +1,7 @@
 """Errors."""
 
 
-class AuthError(HTTPError):
+class AuthError(Exception):
     """Authentication error.
 
     This error can be caught and handled by Flask's `@app.errorhandler`.
