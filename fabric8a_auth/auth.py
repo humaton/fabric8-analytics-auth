@@ -120,9 +120,11 @@ def login_required(view):
             except Exception as exc:
                 lgr.error('Failed with exception')
                 raise exc
-
-        return view(*args, **kwargs)
-
+        try:
+            return view(*args, **kwargs)
+        except Exception as exc:
+            raise exc
+        
     return wrapper
 
 
